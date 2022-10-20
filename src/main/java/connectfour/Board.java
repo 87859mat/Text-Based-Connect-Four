@@ -70,15 +70,25 @@ public class Board{
             for(int j = 0; j < bHoles[i].length; j++) {
                 boardString.append(bHoles[i][j] + "|");
             }
-            boardString.append("\n");
+            boardString.append("\n---------------\n");
         }
-        boardString.append("---------------\n");
         
         return boardString.toString();
     }
 
-    private int[][] loadBoard(String filePath) {
-        File inputFile = new File(filePath);
+    /**
+     * Loads a saved board to this Board by updating its {@code holes} attribute;
+     * <br>
+     * In the case the file name is invalid
+     * @param filePath
+     */
+    private void loadBoard(String filePath) {
+        try {
+            File inputFile = new File(filePath);
+        } catch(NullPointerException e) {
+
+        }
+        
     }
 
     /**
@@ -101,7 +111,10 @@ public class Board{
     }
 
     //Accessors and Mutators
-    public int[][] getHoles() {
+
+    /*note that no access premission modifier (e.g. public) indicates that the class
+    is "package private (similar to protected but a little more restrictive)*/
+    int[][] getHoles() {
         return this.holes;
     }
     
