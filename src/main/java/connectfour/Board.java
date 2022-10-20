@@ -1,5 +1,6 @@
 package connectfour;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -74,6 +75,24 @@ public class Board{
         boardString.append("---------------\n");
         
         return boardString.toString();
+    }
+
+    private int[][] loadBoard(String filePath) {
+        File inputFile = new File(filePath);
+    }
+
+    /**
+     * Sets all of the board's holes to empty by setting {@code holes}
+     * To an (2D) array of all zeros
+     */
+    private void resetBoard() {
+        int[][] emptyBoard = {{0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},};
+        this.setHoles(emptyBoard);
     }
 
     //this ones for saving/loading
