@@ -1,7 +1,6 @@
 package connectfour;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Responsible for handling the storage and manipulation of the Connect 4 
@@ -42,12 +41,13 @@ public class Board{
         int row = 0;
         try {
             for(String str: boardState) {
-                str.replace(",","");
+                str = str.replace(",","");
                 for(int i = 0; i < str.length(); i++) {
-                    this.getHoles()[row][i] = Character.getNumericValue(str.charAt(i));
+                    this.holes[row][i] = Character.getNumericValue(str.charAt(i));
                 }
+                row++;
             }
-
+    
         } catch(IndexOutOfBoundsException e) {
             this.getUI().printLoadingErrorMessage();
             this.holes = new int[6][7];
@@ -57,14 +57,23 @@ public class Board{
                 }
             }    
         }
-        //System.out.println(Arrays.deepToString(this.holes));
     }
 
     //This one's for printing
     @Override
     public String toString() {
-
-        return null;
+        int[][] bHoles = this.getHoles();
+        StringBuilder boardString = new StringBuilder("---------------\n");
+        for(int i = 0; i < bHoles.length; i++) {
+            boardString.append("|"); //need to add leftmost horizontal border first
+            for(int j = 0; j < bHoles[i].length; j++) {
+                boardString.append(bHoles[i][j] + "|");
+            }
+            boardString.append("\n");
+        }
+        boardString.append("---------------\n");
+        
+        return boardString.toString();
     }
 
     //this ones for saving/loading

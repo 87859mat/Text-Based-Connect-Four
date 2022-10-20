@@ -16,11 +16,19 @@ The test results are reported in the reports subfolder of the build directory */
 
 public class BoardTest{
     private Board tester;
+    private Board tester2;
 
     @Before
     public void setup(){
         //set up for the test
         tester = new Board();
+        ArrayList<String> testStrArray = new ArrayList<String>(Arrays.asList("1,2,3,4,5,6,7", 
+                                                                    "9,8,7,6,5,4,3", 
+                                                                    "0,0,0,0,0,0,0", 
+                                                                    "0,0,0,0,0,0,0", 
+                                                                    "9,8,7,6,5,4,3", 
+                                                                    "1,2,3,4,5,6,7"));
+        tester2 = new Board(testStrArray);
 
     }
 
@@ -41,6 +49,25 @@ public class BoardTest{
         Board expected = new Board(expectedBoard);
 
         Assert.assertTrue(Arrays.deepEquals(actual.getHoles(), expected.getHoles()));
+    }
+
+    @Test
+    /*
+     * Tests whether or not Board.toString() properly converts array of 
+     * 1 and two digit integeers into a string
+     */
+    public void toStringTest() {
+        String expected =   "---------------\n"
+                          + "|1|2|3|4|5|6|7|\n"
+                          + "|9|8|7|6|5|4|3|\n"
+                          + "|0|0|0|0|0|0|0|\n"
+                          + "|0|0|0|0|0|0|0|\n"
+                          + "|9|8|7|6|5|4|3|\n"
+                          + "|1|2|3|4|5|6|7|\n"
+                          + "---------------\n";
+        String actual = tester2.toString();
+
+        Assert.assertEquals(expected, actual);
     }
 
 }
