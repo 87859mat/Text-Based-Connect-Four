@@ -3,6 +3,8 @@ package connectfour;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /* you will need to add test methods and likely change the
 setup method as well.  The samples that are here are just so that
@@ -23,11 +25,22 @@ public class BoardTest{
     }
 
     @Test
-    public void someTestHere(){
-        /* to see what happens when a test fails, change
-        the 1 to any other number in the statement below */
-        Assert.assertEquals(tester.returnSomething(), 1);
+    /* 
+     * Tests whether the default constructor initializes it's hole's Attribute properly
+     */
+    public void defaultConstructorTest() {
+        Board actual = tester; //tester was initialized using the default constructor this function tests
+        ArrayList<String> expectedBoard = new ArrayList<String>(Arrays.asList("0,0,0,0,0,0,0", 
+                                                                            "0,0,0,0,0,0,0", 
+                                                                            "0,0,0,0,0,0,0", 
+                                                                            "0,0,0,0,0,0,0", 
+                                                                            "0,0,0,0,0,0,0", 
+                                                                            "0,0,0,0,0,0,0"));
         
+        
+        Board expected = new Board(expectedBoard);
+
+        Assert.assertTrue(Arrays.deepEquals(actual.getHoles(), expected.getHoles()));
     }
 
 }
