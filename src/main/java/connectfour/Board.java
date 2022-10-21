@@ -1,6 +1,9 @@
 package connectfour;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -25,42 +28,114 @@ public class Board{
             }
         }
     }
-    
+
     /**
-     * Constructor for when board state is already known 
-     * (as is the case when a saved board is loaded from a file).
-     * <br><br>
-     * Note that error checking of the input is assumed to have already been completed
-     * and therefore this method operates on the assumption that that format is in
-     * proper csv and connect four formats
-     * @param boardState an ArrayList of strings where each string represents
-     * a row in the board
+     * Loads a saved board to this Board by updating its {@code holes} attribute
+     * and handles all exceptions that may arise throughout that process
+     * <br>
+     * In the case the file name is invalid
+     * @param filePath
      */
-    public Board(ArrayList<String> boardState) {
-        this.ui = new TextUI();
-        this.holes = new int[6][7];
-        int row = 0;
+    public void loadBoard(String filePath) {
+        File inputFile = new File(filePath);
+        
+        try (BufferedReader bReader = new BufferedReader(new FileReader(inputFile))) {
+            ArrayList<String> individualLines = readBoardFile(bReader);
+            this.setHoles(boardStringToArray(individualLines));
+        } catch(IOException | FileFormatException | InvalidContentException e) {
+            this.getUI().printLoadingErrorMessage();
+            this.resetBoard();
+        }    
+    }
+
+    /**
+     * Read's a file where a saved connect four game is supposedly stored and (if it's
+     * in the format of a saved connect four board) returns an arraylist containing the
+     * saved game's state
+     * @param bReader the buffered reader that will be used to read the saved game's file
+     * @return individualLines An arraylist of string where each string represents a row of the board
+     * @throws IOException - If an an error occurs concering the BufferedReader
+     * @throws FileFormatException - if the file is not in the format of a saved connect four game
+     */
+    public static ArrayList<String> readBoardFile(BufferedReader bReader) throws IOException, FileFormatException{
+        String tempString;
+        ArrayList<String> individualLines = new ArrayList<String>();
+        int lineCounter = 0;
+
+        tempString = bReader.readLine();
+        while(tempString != null) {
+            
+            if(tempString.replace(",", "").length() != 7) {
+                throw new FileFormatException();
+            }
+            individualLines.add(lineCounter, tempString);
+            lineCounter++;
+            tempString = bReader.readLine();
+        }
+
+        if(individualLines.size() != 6) {
+            throw new FileFormatException();
+        }
+
+        return individualLines;
+    }
+
+    /**
+     * Sets all of the board's holes to empty by setting {@code holes}
+     * To an (2D) array of all zeros
+     */
+    public void resetBoard() {
+        int[][] emptyBoard = {{0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},
+                              {0,0,0,0,0,0,0},};
+        this.setHoles(emptyBoard);
+    }
+
+    //this ones for saving/loading
+    public String toCSVFormat() {
+        return null;
+    }
+
+    /**
+     * Takes an array list that (when it's elements are appended to each other with newlinea
+     * between them) is in the format of saved connect four game CSV file and returns a 2D 
+     * array that represents an equivelent board state
+     * @param boardString String arraylist that contains a board in the CSV expected format
+     * @return a 2D integer array representing the contents of each hole of the board
+     * @throws FileFormatException - If the comma-sperated board formed by the elements of
+     *                               the array list do not form a board in the proper format
+     * @throws InvalidContentException - If an unexpected character (characters other than '0',
+     *                                  '1', and '2') is found in the board string
+     */
+    public static int[][] boardStringToArray(ArrayList<String> boardString) throws FileFormatException, InvalidContentException{
+        int[][] holesArray = new int[6][7];
+        String tempString;
         try {
-            for(String str: boardState) {
-                str = str.replace(",","");
-                for(int i = 0; i < str.length(); i++) {
-                    this.holes[row][i] = Character.getNumericValue(str.charAt(i));
+            for(int i = 0; i < holesArray.length; i++) {
+                tempString = boardString.get(i).replace(",","");
+                for(int j = 0; j < tempString.length(); j++) {
+                    if(tempString.charAt(i) != '0' && tempString.charAt(i) != '1' 
+                    && tempString.charAt(i) != '2') {
+                        throw new InvalidContentException();
+                    }
+                    holesArray[i][j] = Character.getNumericValue(tempString.charAt(j));
                 }
-                row++;
             }
     
         } catch(IndexOutOfBoundsException e) {
-            this.getUI().printLoadingErrorMessage();
-            this.holes = new int[6][7];
-            for(int i = 0; i < 6; i++) {
-                for(int j = 0; j < 7; j++) {
-                    this.holes[i][j] = 0;
-                }
-            }    
+            throw new FileFormatException();
         }
+
+        return holesArray;
     }
 
-    //This one's for printing
+    /**
+     * Converts Board object's state to the string that will eventually be displayed to
+     * the user
+     */
     @Override
     public String toString() {
         int[][] bHoles = this.getHoles();
@@ -76,40 +151,6 @@ public class Board{
         return boardString.toString();
     }
 
-    /**
-     * Loads a saved board to this Board by updating its {@code holes} attribute;
-     * <br>
-     * In the case the file name is invalid
-     * @param filePath
-     */
-    private void loadBoard(String filePath) {
-        try {
-            File inputFile = new File(filePath);
-        } catch(NullPointerException e) {
-
-        }
-        
-    }
-
-    /**
-     * Sets all of the board's holes to empty by setting {@code holes}
-     * To an (2D) array of all zeros
-     */
-    private void resetBoard() {
-        int[][] emptyBoard = {{0,0,0,0,0,0,0},
-                              {0,0,0,0,0,0,0},
-                              {0,0,0,0,0,0,0},
-                              {0,0,0,0,0,0,0},
-                              {0,0,0,0,0,0,0},
-                              {0,0,0,0,0,0,0},};
-        this.setHoles(emptyBoard);
-    }
-
-    //this ones for saving/loading
-    public String toCSVFormat() {
-        return null;
-    }
-
     //Accessors and Mutators
 
     /*note that no access premission modifier (e.g. public) indicates that the class
@@ -118,7 +159,7 @@ public class Board{
         return this.holes;
     }
     
-    private void setHoles(int[][] holeArray) {
+    void setHoles(int[][] holeArray) {
         this.holes = holeArray;
     }
 

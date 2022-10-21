@@ -3,6 +3,11 @@ package connectfour;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,18 +22,30 @@ The test results are reported in the reports subfolder of the build directory */
 public class BoardTest{
     private Board tester;
     private Board tester2;
+    private ArrayList<String> testStrArray;
 
     @Before
     public void setup(){
         //set up for the test
         tester = new Board();
-        ArrayList<String> testStrArray = new ArrayList<String>(Arrays.asList("1,2,3,4,5,6,7", 
-                                                                    "9,8,7,6,5,4,3", 
+        testStrArray = new ArrayList<String>(Arrays.asList("1,2,0,1,1,2,1", 
+                                                                    "2,2,2,1,1,2,1", 
                                                                     "0,0,0,0,0,0,0", 
                                                                     "0,0,0,0,0,0,0", 
-                                                                    "9,8,7,6,5,4,3", 
-                                                                    "1,2,3,4,5,6,7"));
-        tester2 = new Board(testStrArray);
+                                                                    "1,2,0,1,1,2,1", 
+                                                                    "2,2,2,1,1,2,1"));
+        tester2 = new Board();
+        try {
+            tester2.setHoles(Board.boardStringToArray(testStrArray)); //this should never throw an exception
+        } catch(FileFormatException | InvalidContentException e) {
+            tester2.setHoles(new int[][]{{0,0,0,0,0,0,0},
+                                         {0,0,0,0,0,0,0},
+                                         {0,0,0,0,0,0,0},
+                                         {0,0,0,0,0,0,0},
+                                         {0,0,0,0,0,0,0},
+                                         {0,0,0,0,0,0,0},});
+        }
+            
 
     }
 
@@ -38,37 +55,95 @@ public class BoardTest{
      */
     public void defaultConstructorTest() {
         Board actual = tester; //tester was initialized using the default constructor this function tests
-        ArrayList<String> expectedBoard = new ArrayList<String>(Arrays.asList("0,0,0,0,0,0,0", 
-                                                                            "0,0,0,0,0,0,0", 
-                                                                            "0,0,0,0,0,0,0", 
-                                                                            "0,0,0,0,0,0,0", 
-                                                                            "0,0,0,0,0,0,0", 
-                                                                            "0,0,0,0,0,0,0"));
+        int[][] expectedBoard = new int[][]{{0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},};
         
         
-        Board expected = new Board(expectedBoard);
+        Board expected = new Board();
+        expected.setHoles(expectedBoard);
 
         Assert.assertTrue(Arrays.deepEquals(actual.getHoles(), expected.getHoles()));
     }
 
     @Test
+    public void readBoardFileTest() {
+        ArrayList<String> actual;
+        String actualString = "assets/exampleboard.csv";
+        ArrayList<String> expected = new ArrayList<String>();
+        expected.add("0,0,0,0,0,0,0");
+        expected.add("0,0,0,0,0,0,0");
+        expected.add("0,0,0,0,0,0,0");
+        expected.add("0,0,0,0,0,0,0");
+        expected.add("0,0,0,0,0,1,0");
+        expected.add("0,0,0,1,2,2,1");
+
+        File actualFile = new File(actualString);
+
+        try {
+            BufferedReader bReader = new BufferedReader(new FileReader(actualFile));
+            actual = Board.readBoardFile(bReader);
+        } catch(IOException | FileFormatException e) {
+            actual = null;
+        }
+
+        Assert.assertEquals(expected, actual);
+    }
+    
+    @Test
+    public void resetBoardTest() {
+        int[][] expectedBoard = new int[][]{{0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},};
+        tester2.resetBoard();
+        int[][] actual = tester2.getHoles();
+        Assert.assertArrayEquals(expectedBoard, actual);
+    }
+    
+    @Test
+    public void boardStringToArrayTest() {
+        int[][] actual;
+        int[][] expectedArray = {{1,2,0,1,1,2,1}, 
+                                {2,2,2,1,1,2,1}, 
+                                {0,0,0,0,0,0,0}, 
+                                {0,0,0,0,0,0,0}, 
+                                {1,2,0,1,1,2,1}, 
+                                {2,2,2,1,1,2,1}};
+        try{
+            actual = Board.boardStringToArray(testStrArray);
+        } catch (FileFormatException | InvalidContentException e) {
+            actual = null;
+        }
+        
+
+        Assert.assertArrayEquals(expectedArray, actual);
+        
+    }
+
+    @Test
     /*
      * Tests whether or not Board.toString() properly converts array of 
-     * 1 and two digit integeers into a string
+     * 1 digit integeers into a string
      */
     public void toStringTest() {
         String expected =   "---------------\n"
-                          + "|1|2|3|4|5|6|7|\n"
+                          + "|1|2|0|1|1|2|1|\n"
                           + "---------------\n"
-                          + "|9|8|7|6|5|4|3|\n"
-                          + "---------------\n"
-                          + "|0|0|0|0|0|0|0|\n"
+                          + "|2|2|2|1|1|2|1|\n"
                           + "---------------\n"
                           + "|0|0|0|0|0|0|0|\n"
                           + "---------------\n"
-                          + "|9|8|7|6|5|4|3|\n"
+                          + "|0|0|0|0|0|0|0|\n"
                           + "---------------\n"
-                          + "|1|2|3|4|5|6|7|\n"
+                          + "|1|2|0|1|1|2|1|\n"
+                          + "---------------\n"
+                          + "|2|2|2|1|1|2|1|\n"
                           + "---------------\n";
         String actual = tester2.toString();
 
