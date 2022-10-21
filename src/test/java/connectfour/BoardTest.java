@@ -36,7 +36,7 @@ public class BoardTest{
                                                                     "2,2,2,1,1,2,1"));
         tester2 = new Board();
         try {
-            tester2.setHoles(Board.boardStringToArray(testStrArray)); //this should never throw an exception
+            tester2.setHoles(tester2.boardStringToArray(testStrArray)); //this should never throw an exception
         } catch(FileFormatException | InvalidContentException e) {
             tester2.setHoles(new int[][]{{0,0,0,0,0,0,0},
                                          {0,0,0,0,0,0,0},
@@ -138,7 +138,7 @@ public class BoardTest{
 
         try {
             BufferedReader bReader = new BufferedReader(new FileReader(actualFile));
-            actual = Board.readBoardFile(bReader);
+            actual = tester.readBoardFile(bReader);
         } catch(IOException | FileFormatException e) {
             actual = null;
         }
@@ -169,7 +169,7 @@ public class BoardTest{
                                 {1,2,0,1,1,2,1}, 
                                 {2,2,2,1,1,2,1}};
         try{
-            actual = Board.boardStringToArray(testStrArray);
+            actual = tester.boardStringToArray(testStrArray);
         } catch (FileFormatException | InvalidContentException e) {
             actual = null;
         }

@@ -29,6 +29,89 @@ public class Board{
             }
         }
     }
+    
+    /**
+     * Changes a single holes (i.e. a single element of the this {@code Board}'s 
+     * {@code holes} attribute) to reflect that the player given by {@code player}
+     * has moved a piece there
+     * @param column The column (counting from the left hand side of the board) where the
+     * piece will be dropped
+     * @param player Incdicate's which player's piece is being dropped Should only be 1 or 2
+     */
+    public void dropPiece(int column, int player) {
+        int row;
+
+        //determine which row the piece will end up in based on how many pieces are in the column
+        for(row = 0; row < (this.getHoles().length - 1); row++) {
+            if(this.getHoles()[row + 1][column] != 0) {
+                break;
+            }
+        }
+        this.getHoles()[row][column] = player;
+    }
+    /**
+     * Determines whether the given column in the board is full of pieces or not
+     * @param column Specifies the column to be checked when counting from the 
+     * left-hand side of the board 
+     * @return boolean representing whether the column is full
+     */
+    public boolean columnIsFull(int column) {
+        boolean isFull = true;
+
+        for(int i = 0; i < this.getHoles().length; i++) {
+            if(this.getHoles()[i][column] == 0) {
+                isFull = false;
+                break;
+            }
+        }
+        return isFull;
+    }
+
+    public boolean diagonalWinFound(int player) {
+        int[][] gameHoles = this.getHoles();
+
+        /*Look for diagoanls by looking for the topmost piece of a diagonal "four in a row"
+          pattern and checking the adjacent pieces to the bottom-left and bottom-right diagonals.
+          Keep int mind that the uppermost piece of a diagonal "four in row" pattern must be
+          at least 4 rows above the bottom of the board*/
+        for(int i = 0; i <= gameHoles.length - 4; i++) {
+            /*Keep in mind that the uppermost piece of a diagonal "4 in a row" pattern will either
+              be the leftmost piece (diagonals that go down and to the right) or the rightmost piece
+              (diagonals that go down and to the left) in the pattern*/
+            
+            /*Check for diagonals that go down and to the right. Keep in mind that the leftmost piece
+             of a diagonal "four in row" pattern going down and to the right (i.e. the uppermost piece)
+             must be at least 4 columns to the right of the right-hand side of the board
+            */
+            for(int j = 0; j <= gameHoles[0].length - 4; j++) {
+                if(gameHoles[i][j] == player && gameHoles[i + 1][j + 1] == player
+                && gameHoles[i + 2][j + 2] == player && gameHoles[i + 3][j + 3] == player) {
+                    return true;
+                }
+            }
+
+            /*Check for diagonals that go down and to the left. Keep in mind that the rightmost piece
+             of a diagonal "four in row" pattern going down and to the left (i.e. the uppermost piece)
+             must be at least 4 columns to the left of the left-hand side of the board
+            */
+            for(int j = gameHoles[0].length - 1; j >= 3; j++) {
+                if(gameHoles[i][j] == player && gameHoles[i + 1][j - 1] == player
+                && gameHoles[i + 2][j - 2] == player && gameHoles[i + 3][j - 3] == player) {
+                    return true;
+                }
+            }
+            
+        }
+
+        return false;
+    }
+
+    public boolean horizontalWinFound(int player) {
+        int[][] gameHoles = this.getHoles();
+        for(int i = 0; i <= gameHoles.length - 4; i++) {
+            if(this.)
+        }
+    }
 
     /**
      * Saves the board in it's current state to the files who's path is specified by
@@ -39,7 +122,7 @@ public class Board{
     public void saveBoard(String saveFileName) {
         try (FileWriter fWriter = new FileWriter(saveFileName);){
             int[][] boardState = this.getHoles();
-            String toWrite = Board.toCSVFormat(boardState);
+            String toWrite = this.toCSVFormat(boardState);
             fWriter.write(toWrite);
         } catch(IOException e) {
             this.getUI().printSaveErrorMessage();
@@ -54,16 +137,21 @@ public class Board{
      * @param filePath a String representing the relative path (from the
      * 'A2' directory) to the file where the user wants to load a game from
      */
-    public void loadBoard(String filePath) {
+    public boolean loadBoard(String filePath) {
         File inputFile = new File(filePath);
+        boolean loadSuccessful = true;
         
         try (BufferedReader bReader = new BufferedReader(new FileReader(inputFile))) {
             ArrayList<String> individualLines = readBoardFile(bReader);
             this.setHoles(boardStringToArray(individualLines));
+            loadSuccessful = true;
+            return loadSuccessful;
         } catch(IOException | FileFormatException | InvalidContentException e) {
             this.getUI().printLoadingErrorMessage();
             this.resetBoard();
-        }    
+            loadSuccessful = false;
+            return loadSuccessful;
+        } 
     }
 
     /**
@@ -75,7 +163,7 @@ public class Board{
      * @throws IOException - If an an error occurs concering the BufferedReader
      * @throws FileFormatException - if the file is not in the format of a saved connect four game
      */
-    public static ArrayList<String> readBoardFile(BufferedReader bReader) throws IOException, FileFormatException{
+    public ArrayList<String> readBoardFile(BufferedReader bReader) throws IOException, FileFormatException{
         String tempString;
         ArrayList<String> individualLines = new ArrayList<String>();
         int lineCounter = 0;
@@ -121,7 +209,7 @@ public class Board{
      * @return A string which that is going to be copied exactly into into the file
      * designated for saving the game
      */
-    private static String toCSVFormat(int[][] boardState) {
+    private String toCSVFormat(int[][] boardState) {
         String csv = "";
 
         for(int i = 0; i < boardState.length; i++) {
@@ -150,7 +238,7 @@ public class Board{
      * @throws InvalidContentException - If an unexpected character (characters other than '0',
      *                                  '1', and '2') is found in the board string
      */
-    public static int[][] boardStringToArray(ArrayList<String> boardString) throws FileFormatException, InvalidContentException{
+    public int[][] boardStringToArray(ArrayList<String> boardString) throws FileFormatException, InvalidContentException{
         int[][] holesArray = new int[6][7];
         String tempString;
         try {
