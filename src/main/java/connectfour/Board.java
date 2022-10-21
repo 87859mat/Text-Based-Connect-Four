@@ -3,6 +3,7 @@ package connectfour;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -30,11 +31,28 @@ public class Board{
     }
 
     /**
+     * Saves the board in it's current state to the files who's path is specified by
+     * {@code saveFileName}
+     * @param saveFileName a String representing the relative path (from the
+     * 'A2' directory) to the file where the user wants to load a game from
+     */
+    public void saveBoard(String saveFileName) {
+        try (FileWriter fWriter = new FileWriter(saveFileName);){
+            int[][] boardState = this.getHoles();
+            String toWrite = Board.toCSVFormat(boardState);
+            fWriter.write(toWrite);
+        } catch(IOException e) {
+            this.getUI().printSaveErrorMessage();
+        }
+    }
+
+    /**
      * Loads a saved board to this Board by updating its {@code holes} attribute
      * and handles all exceptions that may arise throughout that process
      * <br>
      * In the case the file name is invalid
-     * @param filePath
+     * @param filePath a String representing the relative path (from the
+     * 'A2' directory) to the file where the user wants to load a game from
      */
     public void loadBoard(String filePath) {
         File inputFile = new File(filePath);
@@ -94,9 +112,31 @@ public class Board{
         this.setHoles(emptyBoard);
     }
 
-    //this ones for saving/loading
-    public String toCSVFormat() {
-        return null;
+    /**
+     * Convert's the {@code Board}'s {@code holes} attribute (2D array) into a string in
+     * the format of a csv i.e. with each element in a row being seperated by commas and
+     * with each row being seperated by a newline
+     * @param boardState a 2D integer array indciating the values at each postion of
+     * board for the game that is to be saved
+     * @return A string which that is going to be copied exactly into into the file
+     * designated for saving the game
+     */
+    private static String toCSVFormat(int[][] boardState) {
+        String csv = "";
+
+        for(int i = 0; i < boardState.length; i++) {
+            //don't want to have a comma before the first element in a row
+            csv += boardState[i][0]; 
+
+            for(int j = 1; j < boardState[0].length; j++) {
+                csv += ",";
+                csv += boardState[i][j];
+            }
+            if(i < (boardState.length - 1)) {
+                csv += "\n";
+            }
+        }
+        return csv;
     }
 
     /**

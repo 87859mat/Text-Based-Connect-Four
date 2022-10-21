@@ -43,4 +43,8 @@ public class TextUI{
         System.out.println("ERROR: it seems like something went wrong when loading your saved game");
         System.out.println("Starting new game...");
     }
+
+    public void printSaveErrorMessage() {
+        System.out.println("ERROR: it seems like your game could not be saved for some reason");
+    }
 }

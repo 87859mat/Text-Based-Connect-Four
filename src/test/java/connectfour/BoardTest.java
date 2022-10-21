@@ -70,6 +70,33 @@ public class BoardTest{
     }
 
     @Test
+    public void saveBoardTest() {
+        String saveFileName = "assets/savetest.csv";
+        String tempString;
+        String actual = "";
+        String expected = "1,2,0,1,1,2,1\n" 
+                        + "2,2,2,1,1,2,1\n" 
+                        + "0,0,0,0,0,0,0\n" 
+                        + "0,0,0,0,0,0,0\n" 
+                        + "1,2,0,1,1,2,1\n" 
+                        + "2,2,2,1,1,2,1\n";
+        tester2.saveBoard(saveFileName);
+        
+        try (BufferedReader bReader = new BufferedReader(new FileReader(saveFileName))){
+            tempString = bReader.readLine();
+            while(tempString != null) {
+                actual += tempString;
+                actual += "\n";
+                tempString = bReader.readLine();
+            }         
+        } catch (Exception e) {
+            actual = null;
+        }
+
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
     public void loadBoardTest() {
         String actualString = "assets/exampleboard.csv";
         int[][] actualBoard;
