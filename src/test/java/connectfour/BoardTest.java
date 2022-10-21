@@ -70,6 +70,32 @@ public class BoardTest{
     }
 
     @Test
+    public void loadBoardTest() {
+        String actualString = "assets/exampleboard.csv";
+        int[][] actualBoard;
+        int[][] expectedBoard = new int[][]{{0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,0,0},
+                                            {0,0,0,0,0,1,0},
+                                            {0,0,0,1,2,2,1},};
+        //we use tester2 so it's noticable when the loadBoard sets the board to empty
+        tester2.loadBoard(actualString);
+        actualBoard = tester2.getHoles();
+
+        //the board being set to an empty board indactes that something unexpected happened
+        if(Arrays.deepEquals(actualBoard, new int[][]{{0,0,0,0,0,0,0},
+                                                    {0,0,0,0,0,0,0},
+                                                    {0,0,0,0,0,0,0},
+                                                    {0,0,0,0,0,0,0},
+                                                    {0,0,0,0,0,0,0},
+                                                    {0,0,0,0,0,0,0},})) {
+            actualBoard = null;
+        }
+        Assert.assertArrayEquals(expectedBoard, actualBoard);
+    }
+    
+    @Test
     public void readBoardFileTest() {
         ArrayList<String> actual;
         String actualString = "assets/exampleboard.csv";

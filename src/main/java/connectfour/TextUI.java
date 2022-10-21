@@ -31,6 +31,7 @@ public class TextUI{
     public String readFileName() {
         Scanner inputScanner = new Scanner(System.in);
         String userInput = inputScanner.nextLine();
+        inputScanner.close();
         return userInput;
     }
 
