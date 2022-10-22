@@ -22,7 +22,15 @@ public class TextUI{
 
     public String readUserInput() {
         Scanner inputScanner = new Scanner(System.in);
-        String userInput = inputScanner.nextLine();
+        String userInput;
+        userInput = inputScanner.nextLine();
+        inputScanner.close();
+        return userInput;
+    }
+
+    public String readUserInput(Scanner inputScanner) {
+        String userInput;
+        userInput = inputScanner.nextLine();
         inputScanner.close();
         return userInput;
     }
@@ -35,13 +43,14 @@ public class TextUI{
         boolean validMove = false;
         String moveString;
         int columnChosen = -1;
+        Scanner inputScanner = new Scanner(System.in);
 
         System.out.println("It is now player " + player + "'s turn\n");
 
         while(!validMove) {
             System.out.println("Please enter a single digit from 1 - 7 to drop a piece in the corresponding column");
             System.out.println("Or enter 's' to save the current game or 'q' to quit the game");
-            moveString = readUserInput();
+            moveString = readUserInput(inputScanner);
 
             moveString = checkForSaveOrQuit(moveString, gameBoard);
 
@@ -74,10 +83,11 @@ public class TextUI{
     }
 
     public void promptForSaveFile(Board gameBoard) {
+        Scanner inputScanner = new Scanner(System.in);
         System.out.println("Enter the file/path you would like to save the game to the relative A2 directory");
         System.out.println("e.g. 'assest/savedGame.csv'");
         
-        String fileName = this.readUserInput();
+        String fileName = this.readUserInput(inputScanner);
         gameBoard.saveBoard(fileName);
 
         System.out.println("Your game was saved");
