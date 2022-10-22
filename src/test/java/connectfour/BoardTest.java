@@ -105,7 +105,7 @@ public class BoardTest{
                                             {0,0,0,0,0,0,0},
                                             {0,0,0,0,0,0,0},
                                             {0,0,0,0,0,1,0},
-                                            {0,0,0,1,2,2,1},};
+                                            {0,0,0,1,2,2,1}};
         //we use tester2 so it's noticable when the loadBoard sets the board to empty
         tester2.loadBoard(actualString);
         actualBoard = tester2.getHoles();
@@ -116,7 +116,7 @@ public class BoardTest{
                                                     {0,0,0,0,0,0,0},
                                                     {0,0,0,0,0,0,0},
                                                     {0,0,0,0,0,0,0},
-                                                    {0,0,0,0,0,0,0},})) {
+                                                    {0,0,0,0,0,0,0}})) {
             actualBoard = null;
         }
         Assert.assertArrayEquals(expectedBoard, actualBoard);
@@ -144,6 +144,92 @@ public class BoardTest{
         }
 
         Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void dropPieceTest() {
+        int[][] expected = {{1,2,1,1,1,2,1}, 
+                            {2,2,2,1,1,2,1}, 
+                            {0,0,0,0,0,0,0}, 
+                            {0,0,0,0,0,0,0}, 
+                            {1,2,0,1,1,2,1}, 
+                            {2,2,2,1,1,2,1}};
+        int[][] actual = tester2.getHoles();
+        tester2.dropPiece(2, 1);
+
+        Assert.assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void columnIsFullTest() {
+        tester2.setHoles(new int[][]{{0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,1,2,2,1}});
+        boolean full = tester2.columnIsFull(5);
+        Assert.assertTrue(full);
+    }
+
+    @Test
+    public void horizontalWinFoundTest() {
+        tester2.setHoles(new int[][]{{0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,2,2,2,2,1}});
+        boolean won = tester2.horizontalWinFound(2);
+        Assert.assertTrue(won);  
+    }
+
+    @Test
+    public void verticalWinFoundTest() {
+        tester2.setHoles(new int[][]{{0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,2,2,2,2,1}});
+        boolean won = tester2.verticalWinFound(1);
+        Assert.assertTrue(won);  
+    }
+
+    @Test
+    public void diagonalWinFoundDownRight() {
+        tester2.setHoles(new int[][]{{0,1,0,0,0,0,0},
+                                    {0,0,0,0,0,0,0},
+                                    {0,0,0,1,0,0,0},
+                                    {0,0,0,0,1,0,0},
+                                    {0,0,0,0,0,1,0},
+                                    {0,0,2,2,2,2,1}});
+        boolean won = tester2.diagonalWinFound(1);
+        Assert.assertTrue(won);  
+    }
+
+    @Test
+    public void diagonalWinFoundDownLeft() {
+        tester2.setHoles(new int[][]{{0,0,0,1,0,0,0},
+                                    {0,0,1,0,0,0,0},
+                                    {0,1,0,0,0,0,0},
+                                    {1,0,0,0,0,0,0},
+                                    {0,0,0,0,0,0,0},
+                                    {0,0,2,2,2,2,1}});
+        boolean won = tester2.diagonalWinFound(1);
+        Assert.assertTrue(won);  
+    }
+
+    @Test
+    public void boardIsFullTest() {
+        tester2.setHoles(new int[][]{{1,1,2,2,2,2,1},
+                                    {1,1,2,2,2,2,1},
+                                    {1,1,2,2,2,2,1},
+                                    {1,1,2,2,2,2,1},
+                                    {1,1,2,2,2,2,1},
+                                    {1,1,2,2,2,2,1}});
+        boolean full = tester2.boardIsFull();
+        Assert.assertTrue(full);
     }
     
     @Test

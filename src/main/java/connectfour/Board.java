@@ -67,6 +67,12 @@ public class Board{
         return isFull;
     }
 
+    /**
+     * Checks whether the {@code Board} has for of the specified player's pieces in a row
+     * diagonally
+     * @param player represents which player's winning pattern we are looking for
+     * @return whether or not that player has four pieces in a row diagonally
+     */
     public boolean diagonalWinFound(int player) {
         int[][] gameHoles = this.getHoles();
 
@@ -94,7 +100,7 @@ public class Board{
              of a diagonal "four in row" pattern going down and to the left (i.e. the uppermost piece)
              must be at least 4 columns to the left of the left-hand side of the board
             */
-            for(int j = gameHoles[0].length - 1; j >= 3; j++) {
+            for(int j = gameHoles[0].length - 1; j >= 3; j--) {
                 if(gameHoles[i][j] == player && gameHoles[i + 1][j - 1] == player
                 && gameHoles[i + 2][j - 2] == player && gameHoles[i + 3][j - 3] == player) {
                     return true;
@@ -106,11 +112,55 @@ public class Board{
         return false;
     }
 
+    /**
+     * Checks whether the {@code Board} has for of the specified player's pieces in a row
+     * horizontally
+     * @param player represents which player's winning pattern we are looking for
+     * @return whether or not the specified has four pieces in a row horizontally
+     */
     public boolean horizontalWinFound(int player) {
         int[][] gameHoles = this.getHoles();
-        for(int i = 0; i <= gameHoles.length - 4; i++) {
-            if(this.)
+        for(int i = 0; i < gameHoles.length; i++) {
+            for(int j = 0; j <= gameHoles[0].length - 4; j++) {
+                if(gameHoles[i][j] == player && gameHoles[i][j + 1] == player
+                && gameHoles[i][j + 2] == player && gameHoles[i][j + 3] == player) {
+                    return true;
+                }
+            }
         }
+        return false;
+    }
+
+     /**
+     * Checks whether the {@code Board} has for of the specified player's pieces in a row
+     * Vertically
+     * @param player represents which player's winning pattern we are looking for
+     * @return whether or not the specified has four pieces in a row vertically
+     */
+    public boolean verticalWinFound(int player) {
+        int[][] gameHoles = this.getHoles();
+        for(int i = 0; i <= gameHoles.length - 4; i++) {
+            for(int j = 0; j < gameHoles[0].length; j++) {
+                if(gameHoles[i][j] == player && gameHoles[i + 1][j] == player
+                && gameHoles[i + 2][j] == player && gameHoles[i + 3][j] == player) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean boardIsFull() {
+        boolean isFull = true;
+
+        for(int[] row : this.getHoles()) {
+            for(int hole : row) {
+                if(hole == 0) {
+                    isFull = false;
+                }
+            }
+        }
+        return isFull;
     }
 
     /**
@@ -238,7 +288,7 @@ public class Board{
      * @throws InvalidContentException - If an unexpected character (characters other than '0',
      *                                  '1', and '2') is found in the board string
      */
-    public int[][] boardStringToArray(ArrayList<String> boardString) throws FileFormatException, InvalidContentException{
+    public int[][] boardStringToArray(ArrayList<String> boardString) throws FileFormatException,InvalidContentException{
         int[][] holesArray = new int[6][7];
         String tempString;
         try {

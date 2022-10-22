@@ -10,7 +10,7 @@ import java.util.Scanner;
  */
 public class TextUI{
 
-    public void WelcomeUser() {
+    public void welcomeUser() {
         System.out.println("Welcome to Eyoel's Connect Four game!\n");
         System.out.println("Would you like to load a previously saved game?");
         System.out.println("If so, please enter the relative path of the file from the \"A2\" directory");
@@ -25,6 +25,10 @@ public class TextUI{
         String userInput = inputScanner.nextLine();
         inputScanner.close();
         return userInput;
+    }
+
+    public void printBoard(Board gameBoard) {
+        System.out.println(gameBoard.toString());
     }
 
     public int promptPlayerToMove(String player, Board gameBoard) {

@@ -7,7 +7,7 @@ package connectfour;
  * @author Eyoel Matiwos
  */
 public class ConnectFour{
-    private enum GameState {P1TURN,P2TURN,P1WIN,P2WIN,TIE,QUIT};
+    private enum GameState {P1TURN,P2TURN,P1WIN,P2WIN,TIE};
     private GameState state;
     private TextUI ui;
     private Board gameBoard;
@@ -32,7 +32,7 @@ public class ConnectFour{
         String userInput;
         
 
-        gameUI.WelcomeUser();
+        gameUI.welcomeUser();
         userInput = gameUI.readUserInput();
 
         if(userInput.equalsIgnoreCase("n")) {
@@ -43,8 +43,9 @@ public class ConnectFour{
 
         while(!gameIsOver()) {
             gameUI.printBoard(currentBoard);
-            makeMove(currentGameState);
+            makeMove();
             checkForWinner();
+            checkForTie();
             switchTurn();
         }
     }
@@ -69,12 +70,29 @@ public class ConnectFour{
             player = "1";
         } else if(this.getState() == GameState.P2TURN) {
             player = "2";
-        } 
-        else {
+        } else {
             return;
         }
         columnSelected = this.getUI().promptPlayerToMove(player, this.getGameBoard());
         this.getGameBoard().dropPiece(columnSelected, Integer.parseInt(player));
+    }
+
+    private void checkForWinner() {
+        gameBoard = this.getGameBoard();
+        if(gameBoard.diagonalWinFound(1) || gameBoard.horizontalWinFound(1)
+        || gameBoard.verticalWinFound(1)) {
+            this.setState(GameState.P1WIN);
+        } else if (gameBoard.diagonalWinFound(2) || gameBoard.horizontalWinFound(2)
+        || gameBoard.verticalWinFound(2)) {
+            this.setState(GameState.P2WIN);
+        }
+    }
+
+    private void checkForTie() {
+        if(this.getGameBoard().boardIsFull() && this.getState() != GameState.P1WIN
+        && this.getState() != GameState.P2WIN) {
+            this.setState(GameState.TIE);
+        }
     }
 
     private void switchTurn() {
@@ -88,13 +106,13 @@ public class ConnectFour{
 
     private boolean gameIsOver() {
         return (this.state == GameState.P1WIN || this.state == GameState.P2WIN
-                || this.state == GameState.TIE || this.state ==  GameState.QUIT);
+                || this.state == GameState.TIE);
     }
 
     @Override
     public String toString() {
-        String connectFourString = "Instance of ConnectFour class\nID: @"+ 
-                                    Integer.toHexString(hashCode());
+        String connectFourString = "Instance of ConnectFour class\nID: @" 
+                                    + Integer.toHexString(hashCode());
         return connectFourString;
     }
 
