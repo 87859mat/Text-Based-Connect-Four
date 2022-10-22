@@ -1,5 +1,6 @@
 package connectfour;
 
+import java.util.Scanner;
 
 /**
  * ConnectFour: 
@@ -27,27 +28,31 @@ public class ConnectFour{
         //for readability
         TextUI gameUI = this.getUI();
         Board currentBoard = this.getGameBoard();
-        GameState currentGameState = this.getState();
-
-        String userInput;
-        
+        Scanner inputScanner = new Scanner(System.in);
 
         gameUI.welcomeUser();
-        userInput = gameUI.readUserInput();
+        processInitialInput(inputScanner);
 
-        if(userInput.equalsIgnoreCase("n")) {
-            gameUI.printCustomMessage("Starting new game...\n");
-        } else {
-            beginLoading(currentBoard, gameUI, userInput);
-        }
 
         while(!gameIsOver()) {
             gameUI.printBoard(currentBoard);
-            makeMove();
+            makeMove(inputScanner);
             checkForWinner();
             checkForTie();
             switchTurn();
         }
+        inputScanner.close();
+    }
+
+    public void processInitialInput(Scanner inputScanner) {
+        String userInput = this.getUI().readUserInput(inputScanner);
+
+        if(userInput.equalsIgnoreCase("n")) {
+            this.getUI().printCustomMessage("Starting new game...\n");
+        } else {
+            beginLoading(gameBoard, this.getUI(), userInput);
+        }
+        
     }
 
     private void beginLoading(Board currentBoard, TextUI currentUI, String userInput) {
@@ -62,7 +67,7 @@ public class ConnectFour{
         }
     }
 
-    private void makeMove() {
+    private void makeMove(Scanner inputScanner) {
         String player;
         int columnSelected;
         
@@ -73,7 +78,7 @@ public class ConnectFour{
         } else {
             return;
         }
-        columnSelected = this.getUI().promptPlayerToMove(player, this.getGameBoard());
+        columnSelected = this.getUI().promptPlayerToMove(player, this.getGameBoard(), inputScanner);
         this.getGameBoard().dropPiece(columnSelected, Integer.parseInt(player));
     }
 

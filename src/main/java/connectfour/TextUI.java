@@ -31,7 +31,6 @@ public class TextUI{
     public String readUserInput(Scanner inputScanner) {
         String userInput;
         userInput = inputScanner.nextLine();
-        inputScanner.close();
         return userInput;
     }
 
@@ -39,11 +38,10 @@ public class TextUI{
         System.out.println(gameBoard.toString());
     }
 
-    public int promptPlayerToMove(String player, Board gameBoard) {
+    public int promptPlayerToMove(String player, Board gameBoard, Scanner inputScanner) {
         boolean validMove = false;
         String moveString;
         int columnChosen = -1;
-        Scanner inputScanner = new Scanner(System.in);
 
         System.out.println("It is now player " + player + "'s turn\n");
 
@@ -52,7 +50,7 @@ public class TextUI{
             System.out.println("Or enter 's' to save the current game or 'q' to quit the game");
             moveString = readUserInput(inputScanner);
 
-            moveString = checkForSaveOrQuit(moveString, gameBoard);
+            moveString = checkForSaveOrQuit(moveString, gameBoard, inputScanner);
 
             try {
                 columnChosen = Integer.parseInt(moveString) - 1;
@@ -63,29 +61,29 @@ public class TextUI{
                 } else {
                     validMove = true;
                 }
-            }catch (NumberFormatException e) {
+            }catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                System.out.println("ERROR: Your input was not a single digit integer\n");
                 validMove = false;
             }
         }
         return columnChosen;
     }
 
-    public String checkForSaveOrQuit(String moveString, Board gameBoard) { 
+    public String checkForSaveOrQuit(String moveString, Board gameBoard, Scanner inputScanner) { 
         if(moveString.equalsIgnoreCase("q")) {
             System.out.println("\n\nQuitting Game...\n\n");
             System.exit(0);
         } else if(moveString.equalsIgnoreCase("s")) {
-            promptForSaveFile(gameBoard);
+            promptForSaveFile(gameBoard, inputScanner);
             return null;
         }
         
         return moveString;
     }
 
-    public void promptForSaveFile(Board gameBoard) {
-        Scanner inputScanner = new Scanner(System.in);
+    public void promptForSaveFile(Board gameBoard, Scanner inputScanner) {
         System.out.println("Enter the file/path you would like to save the game to the relative A2 directory");
-        System.out.println("e.g. 'assest/savedGame.csv'");
+        System.out.println("e.g. 'assests/savedGame.csv'");
         
         String fileName = this.readUserInput(inputScanner);
         gameBoard.saveBoard(fileName);
