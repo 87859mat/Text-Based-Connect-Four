@@ -1,51 +1,37 @@
-# Project Title
+# Eyoel's Connect Four Game
 
-Simple overview of use/purpose.
+Runs a simple, text-based game of connect four in the terminal that can 
+be played by two players on the same keyboard
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
-
-## Getting Started
+For Connect Four's rules see: https://www.gamesver.com/the-rules-of-connect-4-according-to-m-bradley-hasbro/
+<br><br>
+In this implementation two players play on the same keyboard and are labled player 1 and 2 (player 1 being the player that plays first). The current board can be saved and the game quitted during any player's turn. At the beginning of the game, you are given the choice of loading a saved game from a user-specified file. 
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing and running your program.
+* JDK 11
+* Gradle 7.5.1
+* JUnit 4.13
 
 
 
 ### Executing program
 
-* How to build and run the program
-* Step-by-step bullets
-```
-use code blocks for commands
-```
-* include the expected output
+* ```cd``` into the directory within the project folder containing build.gradle in the case of this game it should be in the A2 directory
+* run ```gradle clean build```
+* if errors are encountered, refer to gradle documentation
+* if no errors are encountered run ```java -cp build/classes/java/main connectfour.ConnectFour```
+* the first line of out put should be "Welcome to Eyoel's Connect Four game!" 
 
 ## Limitations
 
-What isn't done? What things cause errors?  
+Unfortunately, there is no functionality to undo moves or to clear the game board without restarting the game with a new board. It is also impossible to load a saved board in the middle of a game.
 
 ## Author Information
 
-Your name and contact information including your email address
-
-## Development History
-
-Keep a log of what things you accomplish when.  You can use git's tagging feature to tag the versions or you can reference commits.
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## Acknowledgments
-
-Inspiration, code snippets, etc.
-* [awesome-readme](https://github.com/matiassingers/awesome-readme)
-* [simple-readme] (https://gist.githubusercontent.com/DomPizzie/7a5ff55ffa9081f2de27c315f5018afc/raw/d59043abbb123089ad6602aba571121b71d91d7f/README-Template.md)
-
+Author: Eyoel Matiwos  
+Email: ematiwos@ouguelph.ca
 
 

@@ -36,6 +36,8 @@ public class TextUI{
         String moveString;
         int columnChosen = -1;
 
+        System.out.println("It is now player " + player + "'s turn\n");
+
         while(!validMove) {
             System.out.println("Please enter a single digit from 1 - 7 to drop a piece in the corresponding column");
             System.out.println("Or enter 's' to save the current game or 'q' to quit the game");
